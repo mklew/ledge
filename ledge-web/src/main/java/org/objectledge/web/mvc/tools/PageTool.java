@@ -30,14 +30,7 @@ package org.objectledge.web.mvc.tools;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 
 import org.jcontainer.dna.Configurable;
 import org.jcontainer.dna.ConfigurationException;
@@ -239,6 +232,17 @@ public class PageTool
 			return href.hashCode();
 		}
 
+        /**
+         * Gets extension of the content
+         * @return extension of the file
+         */
+
+        public String getExtension()
+        {
+            int index = href.lastIndexOf(".");
+            return href.substring(index + 1);
+        }
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -246,7 +250,7 @@ public class PageTool
 		{
 			return (o instanceof ContentLink) && ((ContentLink)o).href.equals(this.href);
 		}
-		
+
 		/** Generates a link for this content resource link.
 		 * @return generated link string (relative URI).
 		 */
@@ -259,6 +263,20 @@ public class PageTool
     //-------------------------------
     // STYLE LINKS
 
+    /**
+     * Returns all style elements. Method to use on page via $pageTool.Styles
+     * @return all style elements
+     */
+    public String getStyles()
+    {
+        StringBuilder builder = new StringBuilder(300);
+        for(StyleLink styleLink : getStyleLinks() )
+        {
+            builder.append(styleLink);
+            builder.append("\n");
+        }
+        return builder.toString();
+    }
     /**
      * Adds a style link with a default priority equal to <code>0</code>.
      * @param href a link to the style
@@ -438,26 +456,62 @@ public class PageTool
         
         public String getRel()
         {
-            if(rel == null || rel.length() == 0) 
+            if(!hasRelDefined())
             {
-                return "stylesheet";
+                return getStyleRel(resLink.getExtension());
             }
             return rel;
         }
-        
+
         public String getType()
         {
-            if(type == null || type.length() == 0)
+            if(!hasTypeDefined())
             {
                 return "text/css";
             }
             return type;
         }
+
+        private boolean hasRelDefined() {
+            return rel == null || rel.length() == 0;
+        }
+
+        private boolean hasTypeDefined() {
+            return type == null || type.length() == 0;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder(100);
+            builder.append("<link rel=\"");
+            builder.append(getRel()).append("\" type=\"").append(getType()).append("\"").
+            append(" href=\"").append(getHref()).append("\">");
+            return builder.toString();
+        }
     }
 
+    private String getStyleRel(String extension)
+    {
+        String rel = Configuration.extToRel.get(extension);
+        if(rel != null)
+            return rel;
+        else
+            return Configuration.DEFAULT_STYLE_REL;
+    }
 
     //-------------------------------
     // SCRIPT LINKS
+
+    public String getScripts()
+    {
+        StringBuilder builder = new StringBuilder(300);
+        for(ScriptLink scriptLink : getScriptLinks() )
+        {
+            builder.append(scriptLink);
+            builder.append("\n");
+        }
+        return builder.toString();
+    }
 
     /** 
      * Adds an autoload script link, with no charset attribute defined.
@@ -623,6 +677,14 @@ public class PageTool
         public String getCharset()
         {
             return charset;
+        }
+
+        @Override
+        public String toString()
+        {
+            StringBuilder builder = new StringBuilder(100);
+            builder.append("<script src=\"").append(getSrc()).append("\"></script>");
+            return builder.toString();
         }
     }
 
@@ -815,9 +877,21 @@ public class PageTool
     {        
         /** HTTP date format string, according to RFC 1123. */
         public static final String RFC_1123_DATE_FORMAT = "EEE, dd-MMM-yyyy HH:mm:ss zzz";
-        
+
+        /** Default stylesheet rel */
+        public static final String DEFAULT_STYLE_REL = "stylesheet";
+
         /** cache interval in seconds */
         private int defaultCacheInterval;
+
+        /** Map of style extensions to rel links */
+        private static Map<String, String> extToRel =  new HashMap<String, String>();
+
+        static
+        {
+            extToRel.put("less", "stylesheet/less");
+            extToRel.put("css", "stylesheet");
+        }
 
         /**
          * Initializes the configuration object.
