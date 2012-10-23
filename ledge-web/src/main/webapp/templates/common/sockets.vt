@@ -1,0 +1,15 @@
+#macro(socket $component_name)
+$component.embed($component_name)##
+#end
+
+#macro(ajax_socket $component_name)
+<div id="ajax-component-${component_name}">
+$component.embed($component_name)<!-- static rendering (pre AJAX)-->##
+</div>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery('#ajax-component-${component_name}').
+			load('$link.renderComponent($component_name)');
+	});
+</script>
+#end
