@@ -1,1 +1,1 @@
-#socket($parameters.component_instance)<!-- dynamic rendering (AJAX) -->##
+#socket($parameters.component_name)<!-- dynamic rendering (AJAX) -->##

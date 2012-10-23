@@ -701,12 +701,12 @@ public class LinkTool
 
     public LinkTool renderComponent(String instanceName) throws ProcessingException
     {
-        return view("RenderComponent").set("component_instance", instanceName);
+        return view("RenderComponent").set("component_name", instanceName);
     }
 
     public LinkTool renderAjaxComponent(String instanceName) throws ProcessingException
     {
-        return view("RenderAjaxComponent").set("component_instance", instanceName);
+        return view("RenderAjaxComponent").set("component_name", instanceName);
     }
 
     // parameter add methods ---------------------------------------------------------------------- 
