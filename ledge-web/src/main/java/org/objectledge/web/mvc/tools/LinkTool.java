@@ -45,6 +45,7 @@ import org.objectledge.ComponentInitializationError;
 import org.objectledge.parameters.Parameters;
 import org.objectledge.parameters.RequestParameters;
 import org.objectledge.parameters.SortedParameters;
+import org.objectledge.pipeline.ProcessingException;
 import org.objectledge.utils.StringUtils;
 import org.objectledge.web.HttpContext;
 import org.objectledge.web.WebConfigurator;
@@ -698,6 +699,16 @@ public class LinkTool
         ///CLOVER:ON
     }
 
+    public LinkTool renderComponent(String instanceName) throws ProcessingException
+    {
+        return view("RenderComponent").set("component_instance", instanceName);
+    }
+
+    public LinkTool renderAjaxComponent(String instanceName) throws ProcessingException
+    {
+        return view("RenderAjaxComponent").set("component_instance", instanceName);
+    }
+
     // parameter add methods ---------------------------------------------------------------------- 
     
     /**
@@ -859,7 +870,8 @@ public class LinkTool
         LinkTool target = getLinkTool(this);
         if (name.equals(config.viewToken))
         {
-			throw new IllegalArgumentException("to unset the value of the view parameter, " +				"call the unsetView() method");
+			throw new IllegalArgumentException("to unset the value of the view parameter, " +
+				"call the unsetView() method");
         }
         else if (name.equals(config.actionToken))
         {
