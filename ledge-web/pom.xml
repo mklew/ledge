@@ -95,7 +95,11 @@
 	<dependency>
 	    <groupId>com.sun.jersey.contribs</groupId>
 	    <artifactId>jersey-multipart</artifactId>
-	</dependency> 	
+	</dependency>
+      <dependency>
+          <groupId>org.apache.shiro</groupId>
+          <artifactId>shiro-core</artifactId>
+      </dependency>
   </dependencies>
   <build>
     <resources>
