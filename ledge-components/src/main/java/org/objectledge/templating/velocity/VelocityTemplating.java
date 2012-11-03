@@ -366,8 +366,8 @@ public class VelocityTemplating
                 ((VelocityContext)context).getContext(), target);
             // re-enable rendering if #stop directive was encountered in the nested template in
             // Velocity 1.5+
-            ((org.apache.velocity.VelocityContext)((VelocityContext)context).getContext())
-                .setAllowRendering(true);
+//            ((org.apache.velocity.VelocityContext)((VelocityContext)context).getContext())
+//                .setAllowRendering(true);
         }
         catch(MethodInvocationException e)
         {
