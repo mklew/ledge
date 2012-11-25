@@ -36,6 +36,15 @@
     </oneOrMore>
   </element>
   <optional>
+        <element name="excludedPackages">
+            <oneOrMore>
+                <element name="package">
+                    <text/>
+                </element>
+            </oneOrMore>
+        </element>
+    </optional>
+  <optional>
     <element name="init-parameters">
       <zeroOrMore>
         <element name="init-parameter">

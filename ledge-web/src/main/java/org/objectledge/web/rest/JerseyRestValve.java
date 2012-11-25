@@ -47,10 +47,11 @@ public class JerseyRestValve
     {
         this.logger = logger;
         ArrayList<String> packageNames = getPackageNamesFromConfig(config);
+        ArrayList<String> excludedPackages = getExcludedPackagesFromConfig(config);
         Configuration initParams = config.getChild("init-parameters", true);
         final LedgeServletConfig ledgeServletConfig = new LedgeServletConfig(servletContext, initParams);
         final PackagesResourceConfig resourceConfig = new PackagesResourceConfig(packageNames.toArray(new String[packageNames.size()]));
-        PicoComponentProviderFactory.initialize(resourceConfig, packageNames, (PicoContainer) servletContext.
+        PicoComponentProviderFactory.initialize(resourceConfig, packageNames, excludedPackages, (PicoContainer) servletContext.
         getAttribute(LedgeServletContextListener.CONTAINER_CONTEXT_KEY));
         jerseyContainer = new ServletContainer(resourceConfig)
             {
@@ -62,6 +63,17 @@ public class JerseyRestValve
             };
 
         jerseyContainer.init();
+    }
+
+    private ArrayList<String> getExcludedPackagesFromConfig(Configuration config) throws ConfigurationException
+    {
+        ArrayList<String> excludedPackages = new ArrayList<>();
+        final Configuration excluded = config.getChild("excludedPackages");
+        for(Configuration excludedConfig : excluded.getChildren("package"))
+        {
+            excludedPackages.add(excludedConfig.getValue());
+        }
+        return excludedPackages;
     }
 
     private ArrayList<String> getPackageNamesFromConfig(Configuration config) throws ConfigurationException

@@ -23,21 +23,28 @@ public class PicoComponentProviderFactory implements IoCComponentProviderFactory
 
     private final PicoContainer container;
     private Collection<Pattern> patterns;
+    private Collection<Pattern> excluded;
 
-    public static void initialize(ResourceConfig rc, Collection<String> packageNames, PicoContainer container)
+    public static void initialize(ResourceConfig rc, Collection<String> packageNames, Collection<String> excludedPackageNames, PicoContainer container)
     {
         Collection<Pattern> patterns = new ArrayList<>();
+        Collection<Pattern> excluded = new ArrayList<>();
         for(String packageName : packageNames)
         {
             patterns.add(Pattern.compile(packageName + ".*"));
         }
-        rc.getSingletons().add(new PicoComponentProviderFactory(container, patterns));
+        for(String packageName : excludedPackageNames)
+        {
+            excluded.add(Pattern.compile(packageName + ".*"));
+        }
+        rc.getSingletons().add(new PicoComponentProviderFactory(container, patterns, excluded));
     }
 
-    public PicoComponentProviderFactory(PicoContainer container, Collection<Pattern> patterns)
+    public PicoComponentProviderFactory(PicoContainer container, Collection<Pattern> patterns, Collection<Pattern> excluded)
     {
         this.container = container;
         this.patterns = patterns;
+        this.excluded = excluded;
     }
 
     @Override
@@ -50,6 +57,14 @@ public class PicoComponentProviderFactory implements IoCComponentProviderFactory
     public IoCComponentProvider getComponentProvider(ComponentContext cc, Class<?> c)
     {
         String name = c.getName();
+        for(Pattern exclude : excluded)
+        {
+            if(exclude.matcher(name).matches())
+            {
+                return null;
+            }
+        }
+
         for(Pattern pattern : patterns)
         {
             if(pattern.matcher(name).matches())
