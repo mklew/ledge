@@ -42,7 +42,7 @@ import javax.naming.directory.SearchControls;
  * @author <a href="mailto:pablo@caltha.pl">Pawel Potempski</a>
  */
 public class DummyUserManager
-    extends UserManager
+    extends AbstractUserManager
 {
     /** A string that may be used as {@code dn} or {@code login} to simulate missing user account. */
     public static final String MISSSING_USER = "MISSING";
@@ -169,7 +169,7 @@ public class DummyUserManager
     {
         throw new UnsupportedOperationException("Dummy manager cannot lookup accounts");
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -236,5 +236,53 @@ public class DummyUserManager
         throws AuthenticationException
     {
         throw new UnsupportedOperationException("Dummy manager cannot check if account is disabled");
+    }
+
+    @Override
+    public BlockedReason checkAccountFlag(Principal account)
+    {
+        throw new UnsupportedOperationException("Failed to check account shadowFlag");
+    }
+
+    @Override
+    public long getUserPasswordExpirationDays(Principal account)
+        throws AuthenticationException
+    {
+        throw new UnsupportedOperationException("Failed to get password expiration days");
+    }
+
+    @Override
+    public boolean isUserPasswordExpired(Principal account)
+        throws AuthenticationException
+    {
+        throw new UnsupportedOperationException("Failed to check if password is expired");
+    }
+
+    @Override
+    public void setUserShadowFlag(Principal user, String code)
+        throws AuthenticationException
+    {
+        throw new UnsupportedOperationException("Failed to set account shadowFlag");
+    }
+
+    @Override
+    public boolean isUserAccountExpired(Principal account)
+        throws AuthenticationException
+    {
+        throw new UnsupportedOperationException("Failed to check if account is expired");
+    }
+
+    @Override
+    public Collection<Principal> getLoginsForGivenEmail(String email)
+        throws AuthenticationException
+    {
+        throw new UnsupportedOperationException("Failed to get logins for given email");
+    }
+
+    @Override
+    public boolean isEmailDuplicated(String email)
+        throws AuthenticationException
+    {
+        throw new UnsupportedOperationException("Failed to check if account email is duplicated");
     }
 }
